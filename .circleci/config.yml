@@ -174,7 +174,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["85:b9:aa:57:cd:11:ae:db:93:82:c9:1f:cd:74:67:78"]
+          fingerprints: ["88:02:1a:98:f0:f5:ac:6f:bb:47:01:18:a4:e1:90:86"]
       - run:
           name: Install dependencies
           command: |
@@ -184,13 +184,21 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Configure server
+          name: Configure backend server
           command: |
-            pwd
+            # add environment variables to server
+            echo NODE_ENV=production > ~/project/backend/.env
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ~/project/backend/.env
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ~/project/backend/.env
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ~/project/backend/.env
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ~/project/backend/.env
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ~/project/backend/.env
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ~/project/backend/.env
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ~/project/backend/.env
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ~/project/backend/.env
+            cat ~/project/backend/.env
             cd .circleci/ansible
-            ls -al
             ansible-playbook -i inventory.txt configure-server.yml
-          no_output_timeout: 30m
       - persist_to_workspace:
           root: ~/
           paths:
@@ -200,20 +208,33 @@ jobs:
 
   # run-migrations:
   #   docker:
-  #     # Docker image here that supports NodeJS
+  #     - image: python:3.10-alpine3.16
   #   steps:
-  #     # Checkout code from git
+  #     - checkout
+  #     - run:
+  #         name: Install deps
+  #         command: |
+  #           apk add --update --no-cache tar gzip nodejs npm aws-cli curl
+  #     - restore_cache:
+  #         keys: [backend-build]
   #     - run:
   #         name: Run migrations
   #         command: |
-  #           # Your code here
-  #           exit 1
+  #           cd backend
+  #           npm install
+  #           npm run build
+  #           npm run migrations >> migrations_dump.txt
+  #           ls -al
+  #           cat migrations_dump.txt
   #     - run:
-  #         name: Send migration results to memstash
+  #         name: Send migration results to kvdb.io
   #         command: |
-  #           # Your code here
-  #           exit 1
-  #   # Here's where you will add some code to rollback on failure      
+  #           if grep -q "migrations" ~/project/backend/migrations_dump.txt
+  #           then
+  #             curl --insecure https://kvdb.io/WeGR8zVVEXzesL9QLzHf8i/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+  #           fi
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
 
   # deploy-frontend:
   #   docker:

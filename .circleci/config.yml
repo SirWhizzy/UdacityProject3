@@ -213,8 +213,6 @@ jobs:
       - destroy-environment
 
 
-
-  
   run-migrations:
     docker:
       - image: python:3.7-alpine3.11
@@ -240,12 +238,10 @@ jobs:
           command: |
             if grep -q "migrations" ~/project/backend/migrations_dump.txt
             then
-              curl --insecure https://kvdb.io/WeGR8zVVEXzesL9QLzHf8i/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+              curl --insecure https://kvdb.io/75noLo4rCTw4gY2AjR7ikp/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
-            
-      - destroy-environment
-      - revert-migrations
-
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 
   deploy_frontend:

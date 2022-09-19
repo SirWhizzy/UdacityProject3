@@ -219,9 +219,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install deps
+          name: Install dependencies
           command: |
-            apk add --update --no-cache tar gzip nodejs npm aws-cli curl
+            sudo apt update
+            sudo apt install -y awscli
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -468,7 +469,6 @@ workflows:
       #     requires: [smoke-test]
       # - add-prometheus-node-exporter:
       #     requires: [smoke-test]
-
 
 
 

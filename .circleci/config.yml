@@ -383,25 +383,24 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y install tar gzip
-      - run:
-          name: Save Old Workflow ID to kvdb.io
-          command: |
-            export OLD_WORKFLOW_ID=$(aws cloudformation \
-                      list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                      --no-paginate --output text)
-            echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
-            curl https://kvdb.io/75noLo4rCTw4gY2AjR7ikp/old_workflow_id -d "${OLD_WORKFLOW_ID}"
+            yum install tar gzip npm nodejs -y
       - run:
           name: Update cloudfront distribution
           command: |
+            # your code here
+            export OldWorkflowID=$(aws cloudformation list-exports \
+            --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+            echo $OldWorkflowID >> ~/OldWorkflowID.txt
             aws cloudformation deploy \
-              --template-file .circleci/files/cloudfront.yml \
-              --stack-name InitialStack-${CIRCLE_WORKFLOW_ID:0:7} \
-              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=udapeople
-      - destroy-environment
-      - revert-migrations
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
+            --tags project=udapeople
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 
   # cleanup:
@@ -434,7 +433,7 @@ jobs:
   #           fi 
   #     - revert-migrations
   #     - destroy-environment
-
+  
 
 
 

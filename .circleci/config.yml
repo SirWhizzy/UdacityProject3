@@ -328,7 +328,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: circleci/node:13.8.0
+      - image: python:alpine3.16
     steps:
       - checkout
       - attach_workspace:

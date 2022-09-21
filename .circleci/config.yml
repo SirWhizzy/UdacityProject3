@@ -466,7 +466,7 @@ workflows:
       - cloudfront-update:
           requires: [smoke-test]
       - cleanup:
-          requires: [cloudfront_update]
+          requires: [cloudfront-update]
       # - add-prometheus-node-exporter:
       #     requires: [smoke-test]
 

@@ -29,7 +29,7 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.big
+      InstanceType: t3.small
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: UdacityProject3-key # If you use another key pair name, you should change this value to match.

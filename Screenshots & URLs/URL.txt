@@ -1,0 +1,13 @@
+URL 1: https://github.com/SirWhizzy/UdacityProject3.git
+
+
+URL 02: http://udapeople-2b26ec3.s3-website-us-east-1.amazonaws.com
+
+URL 03: d2bq5ytoxbsvn3.cloudfront.net
+
+
+URL 04: http://ec2-35-172-183-30.compute-1.amazonaws.com:3030/api/status
+
+
+
+URL 05: http://ec2-52-207-213-29.compute-1.amazonaws.com:9090
